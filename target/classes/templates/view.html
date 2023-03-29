@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Stocks</title>
+</head>
+<body>
+<h1>View Stocks</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Opening Price</th>
+        <th>Closing Price</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:if="${not #lists.isEmpty(stocks)}">
+        <th:block th:each="stock : ${stocks}">
+            <tr>
+                <td th:text="${stock.name}"></td>
+                <td th:text="${stock.openingPrice}"></td>
+                <td th:text="${stock.closingPrice}"></td>
+                <td>
+                    <button onclick="confirmDelete('${stock.name}')">Delete</button>
+                </td>
+            </tr>
+        </th:block>
+    </th:block>
+    <th:block th:if="${#lists.isEmpty(stocks)}">
+        <tr>
+            <td colspan="4">No stocks found</td>
+        </tr>
+    </th:block>
+    </tbody>
+</table>
+
+<a href="#" style="display:block;margin-top:20px;" onclick="window.location.reload();">Refresh</a>
+<a href="/" style="display:block;margin-top:20px;">Back to home</a>
+
+<script>
+    function confirmDelete(name) {
+        if (confirm('Do you really want to delete the stock record for ' + name + '?')) {
+            // make AJAX request to delete the record
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert(xhr.responseText);
+                    window.location.reload();
+                }
+            }
+            xhr.open('DELETE', '/delete/' + name);
+            xhr.send();
+        }
+    }
+</script>
+</body>
+</html>
